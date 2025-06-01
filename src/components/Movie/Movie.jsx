@@ -1,15 +1,27 @@
-import styles from './Movie.module.css';
+// src/components/Movie/Movie.jsx
+import React from "react";
+import { Box, Image, Text } from "@chakra-ui/react";
 
-function Movie(props){
-    const {movie} = props;
+function Movie({ movie }) {
+  return (
+    <Box
+      width="200px"
+      borderWidth="1px"
+      borderRadius="lg"
+      overflow="hidden"
+      boxShadow="md"
+      bg="white"
+    >
+      <Image src={movie.poster} alt={movie.title} />
 
-    return(
-        <div className={styles.movie}>
-            <img className={styles.movie__image} src={movie.poster} alt={movie.title} />
-            <h3 className={styles.movie__title}>{movie.title}</h3>
-            <p className={styles.movie__date}>{movie.year}</p>
-        </div>
-    )
+      <Box p="4">
+        <Text fontWeight="bold">{movie.title}</Text>
+        <Text fontSize="sm" color="gray.600">
+          {movie.year}
+        </Text>
+      </Box>
+    </Box>
+  );
 }
 
 export default Movie;

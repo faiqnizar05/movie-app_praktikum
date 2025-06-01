@@ -17,7 +17,7 @@ function Counter() {
     return (
         <div>
             <p>Result: {angka}</p>
-            <button onClick={addAngka}>Add</button>
+            <button onClick={addAngka}>Adddd</button>
         </div>
     );
 }

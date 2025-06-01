@@ -1,32 +1,18 @@
-import styles from "./Movies.module.css";
+// src/components/Movies/Movies.jsx
+import React from "react";
+import { Box, Flex } from "@chakra-ui/react";
+import data from "../../utils/constants/data";
 import Movie from "../Movie/Movie";
-import data from "../../utils/constants/data"
-import {useState} from 'react';
 
-function Movies(props) {
-const {movies, setMovies} = props;
-
-  function handleClick(){
-    const movie = {
-    id: "xyz", title: "Frozen",
-    year: 2022, type: "Movie",
-    poster: "https://picsum.photos/200/300?grayscale",
-  };
-  setMovies([...movies,movie]);
-}
-
+function Movies() {
   return (
-    <div className={styles.container}>
-      <section className={styles.movies}>
-        <h2>Latest Movies</h2>
-        <div className={styles.movie__container}>
-          {movies.map((movie) => {
-            return <Movie key={movie.id} movie={movie} />;
-          })}
-        </div>
-        <button onClick={handleClick}>Add Movie</button>
-      </section>
-    </div>
+    <Flex wrap="wrap" gap="6" justify="center" p="6" bg="gray.50">
+      {data
+        .filter((movie) => movie && movie.poster)
+        .map((movie) => (
+          <Movie key={movie.id} movie={movie} />
+        ))}
+    </Flex>
   );
 }
 
