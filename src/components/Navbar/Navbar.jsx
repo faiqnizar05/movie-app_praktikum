@@ -5,8 +5,10 @@ import { Link } from "react-router-dom";
 
 const Container = styled.div`
   background-color: #4361ee;
-  padding: 1rem;
+  padding: 2rem;
   color: #fff;
+  width : 100%;
+  position : center;
 `;
 
 
@@ -70,10 +72,10 @@ function Navbar() {
               <NavLink to="/movie/create">Add Movie</NavLink>
             </NavItem>
             <NavItem>
-              <NavLink to="/movie/popular">Popular</NavLink>
+              <Link to="/movie/populars">Popular</Link>
             </NavItem>
             <NavItem>
-              <NavLink to="/movie/now">Now Playing</NavLink>
+              <Link to="/movie/now">Now Playing</Link>
             </NavItem>
             <NavItem>
               <NavLink to="/movie/top">Top Rated</NavLink>

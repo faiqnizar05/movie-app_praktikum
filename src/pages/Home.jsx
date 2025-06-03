@@ -1,12 +1,10 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
+import axios from "axios";
 import Navbar from "../components/Navbar/Navbar";
 import Hero from "../components/Hero/Hero";
 import Footer from "../components/Footer/Footer";
 import Movies from "../components/Movies/Movies";
-import AddMovie from "../components/AddMovie/AddMovie";
-import data from "../utils/constants/data";
-import Button from "../components/UI/Button"; // lokal
-import Heading from '../components/UI/Typography/Heading'; // lokal
+import Heading from '../components/UI/Typography/Heading';
 import Paragraph from '../components/UI/Typography/Paragraph';
 
 import {
@@ -16,7 +14,19 @@ import {
 } from '@chakra-ui/react';
 
 function Home() {
-  const [movies, setMovies] = useState(data);
+  const [movies, setMovies] = useState([]);
+
+  useEffect(() => {
+    async function fetchMovies() {
+      const API_KEY = import.meta.env.VITE_API_KEY;
+      const URL = `https://api.themoviedb.org/3/movie/popular?api_key=${API_KEY}&language=en-US&page=1`;
+      const response = await axios.get(URL);
+      setMovies(response.data.results);
+      // console.log(response.data.results);
+    }
+
+    fetchMovies();
+  }, []);
 
   return (
     <div>
@@ -25,8 +35,6 @@ function Home() {
         <Hero />
 
         {/* Komponen lokal */}
-        <Heading />
-        <Paragraph />
 
         {/* Tombol dari Chakra UI */}
         <Box my={4}>
@@ -35,8 +43,7 @@ function Home() {
           <ChakraButton size="lg" colorScheme="teal">LG</ChakraButton>
         </Box>
 
-        <Movies movies={movies} setMovies={setMovies} />
-        <AddMovie movies={movies} setMovies={setMovies} />
+        <Movies movies={movies} />
       </main>
       <Footer />
     </div>

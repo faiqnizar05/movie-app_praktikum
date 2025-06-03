@@ -1,7 +1,6 @@
 import { useEffect, useState } from "react";
-
-// disini kita tidak menggunakan lagi yang namanya Hero.module.css karena saya udah menggunakan Refactor styled components
 import styled from "styled-components";
+import axios from "axios"; 
 
 const Container = styled.div`
   margin: 1rem;
@@ -11,7 +10,6 @@ const Container = styled.div`
     margin: 3rem auto;
   }
 `;
-
 
 const HeroSection = styled.section`
   display: flex;
@@ -67,7 +65,7 @@ const Button = styled.button`
 `;
 
 const Image = styled.img`
-  max-width: 100%;
+  max-width: 30%;
   height: auto;
   border-radius: 25px;
 `;
@@ -76,25 +74,46 @@ function Hero() {
   const [movie, setMovie] = useState({});
 
   useEffect(() => {
-    async function fetchMovie() {
-      const response = await fetch("https://www.omdbapi.com/?apikey=fcf50ae6&i=tt2975590");
-      const data = await response.json();
-      setMovie(data);
+    const API_KEY = import.meta.env.VITE_API_KEY;
+
+    async function fetchTrendingMovies() {
+      const URL = `https://api.themoviedb.org/3/trending/movie/day?api_key=${API_KEY}`;
+      const response = await axios(URL);
+      const firstMovie = response.data.results[0];
+      return firstMovie;
     }
-    fetchMovie();
+
+    async function fetchDetailMovie() {
+      const trendingMovie = await fetchTrendingMovies();
+      const id = trendingMovie.id;
+      const params = `?api_key=${API_KEY}&append_to_response=videos`;
+      const URL = `https://api.themoviedb.org/3/movie/${id}${params}`;
+      const response = await axios(URL);
+      setMovie(response.data);
+    }
+
+    fetchDetailMovie();
   }, []);
 
   return (
     <Container>
       <HeroSection>
         <HeroLeft>
-          <Title>{movie.Title}</Title>
-          <Genre>{movie.Genre}</Genre>
-          <Description>{movie.Plot}</Description>
-          <Button>Watch</Button>
+          <Title>{movie.title}</Title>
+          <Genre>{movie.genres ? movie.genres.map((g) => g.name).join(', ') : ''}</Genre>
+          <Description>{movie.overview}</Description>
+          <Button
+              as="a"
+              href={`https://www.youtube.com/watch?v=${movie?.videos?.results?.[0]?.key}&autoplay=1`}
+              target="_blank"
+              rel="noopener noreferrer">Watch
+          </Button>
         </HeroLeft>
         <HeroRight>
-          <Image src={movie.Poster} alt={movie.Title || "Poster"} />
+          <Image
+            src={movie.poster_path ? `https://image.tmdb.org/t/p/w500${movie.poster_path}` : ''}
+            alt={movie.title || "poster"}
+          />
         </HeroRight>
       </HeroSection>
     </Container>

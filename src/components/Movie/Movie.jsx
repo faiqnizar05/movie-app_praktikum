@@ -1,26 +1,41 @@
-// src/components/Movie/Movie.jsx
 import React from "react";
-import { Box, Image, Text } from "@chakra-ui/react";
+import styled from "styled-components";
+
+const StyledMovie = styled.div`
+  width: 200px;
+  border: 1px solid #e2e8f0;
+  border-radius: 8px;
+  overflow: hidden;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  background-color: white;
+  text-align: center;
+
+  img {
+    width: 100%;
+    height: auto;
+  }
+
+  h3 {
+    font-size: 1.1rem;
+    margin: 0.5rem 0 0 0;
+  }
+
+  p {
+    color: #718096;
+    margin: 0.25rem 0 0 0;
+  }
+`;
 
 function Movie({ movie }) {
-  return (
-    <Box
-      width="200px"
-      borderWidth="1px"
-      borderRadius="lg"
-      overflow="hidden"
-      boxShadow="md"
-      bg="white"
-    >
-      <Image src={movie.poster} alt={movie.title} />
+  const tmdbImage = `http://image.tmdb.org/t/p/w300/${movie.poster_path}`;
+  const year = movie.release_date ? movie.release_date.slice(0, 4) : "Unknown";
 
-      <Box p="4">
-        <Text fontWeight="bold">{movie.title}</Text>
-        <Text fontSize="sm" color="gray.600">
-          {movie.year}
-        </Text>
-      </Box>
-    </Box>
+  return (
+    <StyledMovie>
+      <img src={tmdbImage} alt={movie.title} />
+      <h3>{movie.title}</h3>
+      <p>{year}</p>
+    </StyledMovie>
   );
 }
 
