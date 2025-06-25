@@ -1,5 +1,6 @@
 import React from "react";
 import styled from "styled-components";
+import { Link } from "react-router-dom";
 
 const StyledMovie = styled.div`
   width: 200px;
@@ -27,13 +28,17 @@ const StyledMovie = styled.div`
 `;
 
 function Movie({ movie }) {
-  const tmdbImage = `http://image.tmdb.org/t/p/w300/${movie.poster_path}`;
+  const tmdbImage = movie.poster_path.startsWith("http")
+    ? movie.poster_path
+    : `http://image.tmdb.org/t/p/w300/${movie.poster_path}`;
   const year = movie.release_date ? movie.release_date.slice(0, 4) : "Unknown";
 
   return (
     <StyledMovie>
       <img src={tmdbImage} alt={movie.title} />
-      <h3>{movie.title}</h3>
+      <Link to={`/movie/${movie.id}`}>
+        <h3>{movie.title}</h3>
+      </Link>
       <p>{year}</p>
     </StyledMovie>
   );

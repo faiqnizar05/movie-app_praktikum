@@ -1,104 +1,78 @@
-import { useState } from "react";
+import { useState, useContext } from "react";
+import { useNavigate } from "react-router-dom";
 import Alert from "../Alert/Alert";
 import styles from "./Addmovie.module.css";
-import Movies from "../Movies/Movies";
+import MoviesContext from "../context/MoviesContext";
 
-function AddMovieForm(props) {
-    // Menggunakan object untuk form data
-    const [formData, setFormData] = useState({
-        title: "",
-        date: "",
-    });
+function AddMovieForm() {
+  const [formData, setFormData] = useState({ title: "", date: "" });
+  const [errors, setErrors] = useState({});
+  const { movies, setMovies } = useContext(MoviesContext);
+  const navigate = useNavigate();
 
-    // Tugas frontend pertemuan 9 tugas 3 yaitu: 
-    // 1.Problem: 1 error 1 state.
-    // 2.Refactor multiple error to use one state.
-    // 3.Gunakan object.
-    // 4.Gunakan spread operator.
+  const { title, date } = formData;
 
-    // gunakan problem: 1 error 1 state Refactor: gunakan satu object
-    const [errors, setErrors] = useState({});
+  function handleChange(e) {
+    const { name, value } = e.target;
+    setFormData({ ...formData, [name]: value });
+    setErrors({ ...errors, [name]: "" });
+  }
 
-    const { movies, setMovies } = props;
+  function validate() {
+    const newErrors = {};
+    if (!title) newErrors.title = "Title wajib diisi";
+    if (!date) newErrors.date = "Year wajib diisi";
+    setErrors(newErrors);
+    return Object.keys(newErrors).length === 0;
+  }
 
-    function handleChange(e) {
-        const { name, value } = e.target;
+  function addMovie() {
+    const newMovie = {
+      id: crypto.randomUUID(),
+      title,
+      release_date: date,
+      type: "Movie",
+      poster_path: "https://picsum.photos/200/300", 
+    };
 
-        // Gunakan spread operator untuk update formData
-        setFormData({
-            ...formData,
-            [name]: value,
-        });
+    setMovies((prev) => [...prev, newMovie]);
+    navigate("/"); // Redirect ke Home
+  }
 
-        // Bersihkan error field terkait saat mengetik
-        setErrors({
-            ...errors,
-            [name]: "",
-        });
+  function handleSubmit(e) {
+    e.preventDefault();
+    if (validate()) {
+      addMovie();
     }
+  }
 
-    const { title, date } = formData;
+  return (
+    <div className={styles.container}>
+      <form onSubmit={handleSubmit}>
+        <input
+          className={styles.input_form}
+          type="text"
+          name="title"
+          placeholder="Title"
+          value={title}
+          onChange={handleChange}
+        />
+        {errors.title && <Alert>{errors.title}</Alert>}
 
-    function validate() {
-        const newErrors = {};
+        <input
+          className={styles.input_form}
+          type="text"
+          name="date"
+          placeholder="Year"
+          value={date}
+          onChange={handleChange}
+        />
+        {errors.date && <Alert>{errors.date}</Alert>}
 
-        // Gunakan object untuk menyimpan banyak error
-        if (!title) newErrors.title = "Title wajib diisi";
-        if (!date) newErrors.date = "Year wajib diisi";
-
-        setErrors(newErrors);
-
-        // Jika tidak ada error, return true
-        return Object.keys(newErrors).length === 0;
-    }
-
-    function addMovie() {
-        const movie = {
-            id: "xyz",
-            title: title,
-            year: date,
-            type: "Movie",
-            poster: "https://picsum.photos/200/300?grayscale"
-        };
-        setMovies([...movies, movie]);
-    }
-
-    function handleSubmit(e) {
-        e.preventDefault();
-        if (validate()) {
-            addMovie();
-        }
-    }
-
-    return (
-        <div className={styles.container}>
-            <form onSubmit={handleSubmit}>
-                <input
-                    className={styles.input_form}
-                    id="title"
-                    type="text"
-                    value={title}
-                    name="title"
-                    placeholder="Title"
-                    onChange={handleChange}
-                />
-                {errors.title && <Alert>{errors.title}</Alert>}
-
-                <input
-                    className={styles.input_form}
-                    id="date"
-                    type="text"
-                    value={date}
-                    name="date"
-                    placeholder="Year"
-                    onChange={handleChange}
-                />
-                {errors.date && <Alert>{errors.date}</Alert>}
-
-                <button className={styles.button_form}>Add Movie</button>
-            </form>
-        </div>
-    );
+        <button className={styles.button_form}>Add Movie</button>
+      </form>
+    </div>
+  );
 }
 
 export default AddMovieForm;
